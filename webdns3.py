@@ -42,7 +42,15 @@ def index(record_type='A', name='www.google.com'):
     response.content_type = 'text/plain'
 
     try:
-        results = str(RESOLVER.query(name, record_type).response)
+        if record_type == 'all':
+            result1 = str(RESOLVER.query(name, 'A').response)
+            result2 = str(RESOLVER.query(name, 'MX').response)
+            #result3 = str(RESOLVER.query(name, 'CNAME').response)
+            result4 = str(RESOLVER.query(name, 'TXT').response)
+            #result5 = str(RESOLVER.query(name, 'NS').response)
+            results = result1 + "\n" + result2 + "\n" + result4 # + "\n" + result3 + "\n" + result5
+        else:
+            results = str(RESOLVER.query(name, record_type).response)
 
     except dns.resolver.NXDOMAIN:
         results = 'NXDOMAIN'
