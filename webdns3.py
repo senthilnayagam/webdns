@@ -29,28 +29,10 @@ def set_nameservers(servers):
     else:
         raise TypeError("'server' must be a list")
 
-
-@route('/favicon.ico')
-def favicon():
-    return ''
-
-
-@route('/')
-@route('/<name>')
-@route('/<record_type>/<name>')
-def index(record_type='A', name='www.google.com'):
-    response.content_type = 'text/plain'
-
+def dns_query(name='www.google.com',record_type='A' ):
     try:
-        if record_type == 'all':
-            result1 = str(RESOLVER.query(name, 'A').response)
-            result2 = str(RESOLVER.query(name, 'MX').response)
-            #result3 = str(RESOLVER.query(name, 'CNAME').response)
-            result4 = str(RESOLVER.query(name, 'TXT').response)
-            #result5 = str(RESOLVER.query(name, 'NS').response)
-            results = result1 + "\n" + result2 + "\n" + result4 # + "\n" + result3 + "\n" + result5
-        else:
-            results = str(RESOLVER.query(name, record_type).response)
+        
+        results = str(RESOLVER.query(name, record_type).response)
 
     except dns.resolver.NXDOMAIN:
         results = 'NXDOMAIN'
@@ -63,6 +45,31 @@ def index(record_type='A', name='www.google.com'):
 
     finally:
         return results
+        
+        
+
+@route('/favicon.ico')
+def favicon():
+    return ''
+
+
+@route('/')
+@route('/<name>')
+@route('/<record_type>/<name>')
+def index(record_type='A', name='www.google.com'):
+    response.content_type = 'text/plain'
+
+    if record_type == 'all':
+        result1 = dns_query(name, 'A')
+        result2 = dns_query(name, 'MX')
+        result3 = dns_query(name, 'CNAME')
+        result4 = dns_query(name, 'TXT')
+        result5 = dns_query(name, 'NS')
+        results = result1 + "\n" + result2 + "\n" + result3  + "\n" + result4 + "\n" + result5
+    else:
+        results = dns_query(name, record_type)
+
+    return results
 
 
 if __name__ == '__main__':
