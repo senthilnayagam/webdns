@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
 import argparse
 import os
 
@@ -21,7 +23,7 @@ RESOLVER = dns.resolver.Resolver()
 
 def set_nameservers(servers):
     if isinstance(servers, list):
-        print "Using %s as nameservers." % str(servers)
+        print("Using %s as nameservers." % str(servers))
         RESOLVER.nameservers = servers
 
     else:
